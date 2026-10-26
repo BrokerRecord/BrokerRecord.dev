@@ -25,8 +25,8 @@ My personal portfolio website showcasing my background, technical skills, resear
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/BrokerRecord/awa-portfolio.git
-cd awa-portfolio
+git clone https://github.com/BrokerRecord/BrokerRecord.dev.git
+cd BrokerRecord.dev
 npm install
 npm run dev
 ```

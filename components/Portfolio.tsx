@@ -25,19 +25,16 @@ export function useLang() {
 
 function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const u = ui[lang];
-  return (
-    <header>
-      <div className="w">
-        <Link className="logo" href="/">Awa Mbaye</Link>
-        <nav aria-label="Main">
-          <Link href="/#work">{u.n1}</Link><Link href="/#path">{u.n2}</Link><Link href="/#skills">{u.n3}</Link><Link href="/#certs">{u.n4}</Link><Link href="/#contact">{u.n5}</Link>
-          <div className="lang" role="group" aria-label="Language">
-            {(["fr", "en"] as Lang[]).map((l) => (<button key={l} aria-pressed={lang === l} onClick={() => setLang(l)}>{l.toUpperCase()}</button>))}
-          </div>
-        </nav>
-      </div>
-    </header>
-  );
+  const [menu, setMenu] = useState(false);
+  const links = [["/#work",u.n1],["/#path",u.n2],["/#skills",u.n3],["/#certs",u.n4],["/#contact",u.n5]];
+  return <header><div className="w">
+    <Link className="logo" href="/">Awa Mbaye<span className="logo-dot">.</span></Link>
+    <nav className={menu ? "nav-open" : ""} aria-label={lang === "fr" ? "Navigation principale" : "Main navigation"}>
+      {links.map(([href,label])=><Link key={href} href={href} onClick={()=>setMenu(false)}>{label}</Link>)}
+      <div className="lang" role="group" aria-label="Language / Langue">{(["fr","en"] as Lang[]).map(l=><button key={l} aria-pressed={lang===l} onClick={()=>setLang(l)}>{l.toUpperCase()}</button>)}</div>
+    </nav>
+    <button className="menu-toggle" aria-label={menu ? (lang==="fr"?"Fermer le menu":"Close menu") : (lang==="fr"?"Ouvrir le menu":"Open menu")} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu ? "✕" : "☰"}</button>
+  </div></header>;
 }
 
 function Footer() {
@@ -74,38 +71,29 @@ function Lightbox({ items, i, set }: { items: LB[]; i: number | null; set: (v: n
 
 /* The one orchestrated moment: the name starts noisy, then denoises. Pointer speed brings the noise back. */
 function Hero({ lang }: { lang: Lang }) {
-  const u = ui[lang], r = role[lang];
-  const dm = useRef<SVGFEDisplacementMapElement>(null), tb = useRef<SVGFETurbulenceElement>(null), h1 = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    const rm = matchMedia("(prefers-reduced-motion:reduce)").matches, el = h1.current!;
-    let cur = rm ? 0 : 70, tg = 0, lx = 0, ly = 0, fr = 0, raf = 0;
-    const mv = (e: PointerEvent) => { const v = Math.hypot(e.clientX - lx, e.clientY - ly); lx = e.clientX; ly = e.clientY; if (!rm) tg = Math.min(28, Math.max(tg, v * 0.8)); };
-    el.addEventListener("pointermove", mv);
-    const f = () => {
-      fr++; cur += (tg - cur) * (fr < 150 ? 0.035 : 0.09); tg *= 0.93;
-      if (cur > 1 && fr % 4 === 0) tb.current?.setAttribute("seed", String((fr / 4) % 60));
-      dm.current?.setAttribute("scale", cur.toFixed(1));
-      el.style.filter = cur < 0.4 && tg < 0.4 ? "none" : "url(#dn)";
-      raf = requestAnimationFrame(f);
-    };
-    f();
-    return () => { cancelAnimationFrame(raf); el.removeEventListener("pointermove", mv); };
-  }, []);
-  return (
-    <div className="w hero">
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true"><filter id="dn" x="-5%" y="-25%" width="110%" height="150%"><feTurbulence ref={tb} type="fractalNoise" baseFrequency=".03 .07" numOctaves={2} seed={3} /><feDisplacementMap ref={dm} in="SourceGraphic" scale={70} /></filter></svg>
-      <h1 ref={h1} style={{ filter: "url(#dn)" }}>Awa Mbaye</h1>
-      <div className="hb">
-        <div>
-          <p className="role rise">{r[0]}<em>{r[1]}</em>{r[2]}</p>
-          <p className="lead rise">{u.lead}</p>
-          <div className="cta rise"><a className="btn p" href="#work">{u.b1}</a><a className="btn" href="/Awa_Mbaye_CV.pdf" download>{u.b2}</a></div>
-          <p className="hint rise">{u.hint}</p>
-        </div>
-        <div className="ph rise"><img src="/profile.jpg" alt="Awa Mbaye" /></div>
-      </div>
+  const u=ui[lang];
+  return <section className="hero-shell"><div className="w hero hero-v3">
+    <div className="hero-copy"><div className="available"><span className="status-dot"/>{lang==="fr"?"Ouverte aux opportunités":"Open to opportunities"}</div>
+      <p className="eyebrow">{lang==="fr"?"INGÉNIEURE · IA & DATA · RECHERCHE APPLIQUÉE":"ENGINEER · AI & DATA · APPLIED RESEARCH"}</p>
+      <h1>Awa Mbaye<span className="hero-period">.</span></h1>
+      <p className="hero-subtitle">{lang==="fr"?"Ingénieure R&D en IA, Data Science et Mathématiques Appliquées.":"R&D Engineer in AI, Data Science and Applied Mathematics."}</p>
+      <p className="lead">{u.lead}</p>
+      <div className="cta"><a className="btn p" href="#work">✦ {u.b1} ↗</a><a className="btn" href="/Awa_Mbaye_CV.pdf" download>↓ {u.b2}</a></div>
+      <div className="hero-stats"><div><strong>{sorted.length}</strong><span>{lang==="fr"?"Projets":"Projects"}</span></div><div><strong>2</strong><span>{lang==="fr"?"Expériences de recherche":"Research experiences"}</span></div><div><strong>{skills.reduce((n,g)=>n+g.items.length,0)}+</strong><span>{lang==="fr"?"Compétences":"Technical skills"}</span></div><div><strong>{certs.length}</strong><span>{lang==="fr"?"Certificats":"Certificates"}</span></div></div>
     </div>
-  );
+    <div className="hero-visual"><div className="portrait-halo"><img src="/profile.jpg" alt="Awa Mbaye" /></div><div className="floating-tag tag-one">✦ {lang==="fr"?"IA & Deep Learning":"AI & Deep Learning"}</div><div className="floating-tag tag-two">◈ Data Science</div><div className="floating-tag tag-three">✧ {lang==="fr"?"Imagerie médicale":"Medical imaging"}</div><div className="floating-tag tag-four">∑ {lang==="fr"?"Mathématiques appliquées":"Applied mathematics"}</div><div className="signature">Awa Mbaye</div></div>
+  </div></section>;
+}
+
+const featuredSlugs=["mri-denoising","customer-intelligence","ema-sens","supply-chain-analytics","robotics-vision","heat-equation"];
+function Featured({lang}:{lang:Lang}) {
+ const [filter,setFilter]=useState("all");
+ const filters=[{id:"all",fr:"Tous",en:"All"},{id:"imaging",fr:"Imagerie",en:"Medical imaging"},{id:"data",fr:"Data & BI",en:"Data & BI"},{id:"research",fr:"Recherche & IA",en:"Research & AI"}];
+ const chosen=featuredSlugs.map(slug=>sorted.find(p=>p.slug===slug)).filter((p):p is NonNullable<typeof p>=>!!p).filter(p=>filter==="all"||(filter==="imaging"&&p.slug==="mri-denoising")||(filter==="data"&&["customer-intelligence","supply-chain-analytics"].includes(p.slug))||(filter==="research"&&["ema-sens","robotics-vision","heat-equation"].includes(p.slug)));
+ return <section id="work" className="featured-section"><div className="w"><p className="eyebrow">✦ {lang==="fr"?"UNE SÉLECTION DE MES TRAVAUX":"SELECTED WORK"}</p><div className="section-head"><div><h2>{lang==="fr"?"Projets phares":"Featured projects"}</h2><p className="sub">{lang==="fr"?"Des solutions concrètes, de la recherche aux tableaux de bord.":"Real-world solutions, from research to interactive dashboards."}</p></div><Link className="subtle-link" href="/projects/">{lang==="fr"?"Tous les projets":"All projects"} ↗</Link></div>
+ <div className="filters" role="group" aria-label={lang==="fr"?"Filtrer les projets":"Filter projects"}>{filters.map(f=><button key={f.id} className={filter===f.id?"selected":""} aria-pressed={filter===f.id} onClick={()=>setFilter(f.id)}>{f[lang]}</button>)}</div>
+ <div className="featured-grid">{chosen.map(p=>{const shot=galleries[p.slug]?.[0];return <article className="feature-card" key={p.slug}><Link href={`/projects/${p.slug}/`} className="feature-image"><img src={shot?`/projects/${shot.file}`:logo(p.slug)} alt={t(p.title,lang)} loading="lazy" /></Link><div className="feature-content"><span className="eyebrow feature-cat">{t(p.category,lang)}</span><h3>{t(p.title,lang)}</h3><p>{t(p.description,lang)}</p><div className="feature-tools">{p.tools.slice(0,3).map(tool=><span key={tool}>{tool}</span>)}</div><div className="feature-links"><Link href={`/projects/${p.slug}/`}>{lang==="fr"?"Voir le projet":"View case study"} ↗</Link>{gh(p)&&<a href={gh(p)} target="_blank" rel="noopener noreferrer">GitHub ↗</a>}</div></div></article>})}</div>
+ </div></section>;
 }
 
 function Work({ lang }: { lang: Lang }) {
@@ -131,8 +119,8 @@ function Work({ lang }: { lang: Lang }) {
     return () => { removeEventListener("pointermove", m); removeEventListener("scroll", off); cancelAnimationFrame(raf); };
   }, []);
   return (
-    <section id="work"><div className="w">
-      <h2>{u.wt}</h2><p className="sub">{u.ws}</p>
+    <section id="archive"><div className="w">
+      <p className="eyebrow">✧ {lang === "fr" ? "EXPLORER DAVANTAGE" : "EXPLORE MORE"}</p><h2>{lang === "fr" ? "Tous mes projets" : "More projects"}</h2><p className="sub">{u.ws}</p>
       <div>
         {sorted.map((p, i) => {
           const shot = galleries[p.slug]?.[0], url = gh(p);
@@ -147,7 +135,7 @@ function Work({ lang }: { lang: Lang }) {
                   <img className="lg" src={logo(p.slug)} alt={`Logo ${t(p.title, lang)}`} loading="lazy" />
                   <div>
                     <p style={{ margin: "0 0 1rem", maxWidth: "62ch" }}>{t(p.description, lang)}</p>
-                    <p className="tl">{p.tools.join(", ")}</p>
+                    <div className="feature-tools">{p.tools.map(x=><span key={x}>{x}</span>)}</div>
                     <div className="act">
                       <Link className="btn p" href={`/projects/${p.slug}/`}>{u.open}</Link>
                       {url && <a className="btn" href={url} target="_blank" rel="noopener noreferrer">GitHub</a>}
@@ -164,18 +152,27 @@ function Work({ lang }: { lang: Lang }) {
   );
 }
 
+type Bilingual = {fr:string;en:string};
+const backgroundItems: {year:string;place:string;type:Bilingual;title:Bilingual;description:Bilingual;tags:string[]}[] = [
+ {year:"2025",place:"POSTECH · South Korea",type:{fr:"RECHERCHE",en:"RESEARCH"},title:{fr:"Recherche en IA et imagerie médicale",en:"AI and medical imaging research"},description:{fr:"Stage de fin d’études consacré au débruitage d’images IRM. Développement et évaluation d’une approche hybride combinant BM3D et DnCNN, avec des expériences Python, des comparaisons de qualité d’image par PSNR et SSIM et une interface PyQt5.",en:"Final-year research internship focused on MRI image denoising. Developed and evaluated a hybrid BM3D–DnCNN approach, using Python experiments, PSNR and SSIM image-quality comparisons, and a PyQt5 interface."},tags:["Python","PyTorch","BM3D / DnCNN","PSNR / SSIM"]},
+ {year:"2024",place:"IMS Bordeaux · France",type:{fr:"RECHERCHE & DÉVELOPPEMENT",en:"RESEARCH & DEVELOPMENT"},title:{fr:"EMA-SENS · Application et recherche cognitive",en:"EMA-SENS · Cognitive research application"},description:{fr:"Conception d’une application mobile React Native/Firebase pour administrer des tâches cognitives et des questionnaires. Participation à la collecte de données expérimentales et à leur analyse statistique sous R pour étudier les variations de performance cognitive.",en:"Built a React Native/Firebase mobile application for cognitive tasks and questionnaires. Contributed to experimental data collection and statistical analysis in R to investigate changes in cognitive performance."},tags:["React Native","Firebase","R","Expérimentation"]},
+ {year:"2024",place:"POSTECH · South Korea",type:{fr:"ÉCHANGE ACADÉMIQUE",en:"ACADEMIC EXCHANGE"},title:{fr:"Graduate School of Artificial Intelligence",en:"Graduate School of Artificial Intelligence"},description:{fr:"Semestre d’échange international avec des enseignements en machine learning, deep learning, statistiques mathématiques, algèbre linéaire et équations différentielles. Une expérience qui a renforcé mon intérêt pour les fondements mathématiques de l’IA.",en:"International exchange semester studying machine learning, deep learning, mathematical statistics, linear algebra and differential equations. This experience deepened my interest in the mathematical foundations of AI."},tags:["Machine Learning","Deep Learning","Statistiques"]},
+ {year:"2022–2025",place:"ENSC · Bordeaux INP · France",type:{fr:"FORMATION",en:"EDUCATION"},title:{fr:"Diplôme d’ingénieure en Cognitique",en:"Engineering degree in Cognitive Science"},description:{fr:"Formation d’ingénieure pluridisciplinaire articulant intelligence artificielle, analyse de données, programmation, interactions humain-machine et méthodes expérimentales. Projets logiciels et de recherche appliquée.",en:"Multidisciplinary engineering education combining artificial intelligence, data analysis, programming, human–computer interaction and experimental methods, with hands-on software and applied research projects."},tags:["IA","Programmation","Data","IHM / HCI"]},
+ {year:"2020–2022",place:"Lycée Saliège · France",type:{fr:"FORMATION",en:"EDUCATION"},title:{fr:"Classes préparatoires scientifiques · PCSI / PSI",en:"Scientific preparatory classes · PCSI / PSI"},description:{fr:"Formation scientifique intensive en mathématiques, physique et sciences de l’ingénieur. Acquisition de bases solides en raisonnement analytique, modélisation et résolution de problèmes.",en:"Intensive scientific training in mathematics, physics and engineering sciences, establishing a strong foundation in analytical reasoning, modeling and problem solving."},tags:["Mathématiques","Physique","Modélisation"]}
+];
+const profileText: Record<Lang,string[]> = {
+ fr:["Diplômée de l’ENSC – Bordeaux INP, je conçois des solutions à l’intersection de l’intelligence artificielle, de l’analyse de données, du développement logiciel et de la recherche appliquée.","Mes projets vont du traitement d’images médicales et du deep learning à l’analyse statistique, à la business intelligence et au développement d’applications interactives. Cette diversité me permet d’aborder un problème aussi bien par ses données que par ses algorithmes et son usage.","J’aime transformer des questions complexes en outils concrets, reproductibles et compréhensibles. Je recherche des opportunités en IA appliquée, Data Science, développement Python ou R&D, où je pourrai contribuer tout en approfondissant les dimensions mathématiques et algorithmiques de mon travail."],
+ en:["An engineering graduate from ENSC – Bordeaux INP, I develop solutions at the intersection of artificial intelligence, data analysis, software engineering and applied research.","My work spans medical image processing and deep learning, statistical analysis, business intelligence and interactive application development. This range of experience helps me approach a challenge through its data, algorithms and real-world use.","I enjoy turning complex questions into practical, reproducible and understandable tools. I am seeking opportunities in applied AI, Data Science, Python development or R&D, where I can contribute while developing the mathematical and algorithmic aspects of my work."]
+};
 function Path({ lang }: { lang: Lang }) {
-  const u = ui[lang];
-  return (
-    <section id="path"><div className="w">
-      <h2>{u.pt}</h2><p className="sub">{u.ps}</p>
-      <div className="two">
-        <div><span className="yr">2025 · POSTECH, {lang === "fr" ? "Corée du Sud" : "South Korea"}</span><h3>{u.e1t}</h3><p>{u.e1}</p></div>
-        <div><span className="yr">2024 · IMS Bordeaux</span><h3>{u.e2t}</h3><p>{u.e2}</p></div>
-      </div>
-      <div className="two" style={{ marginTop: "5rem", gridTemplateColumns: "1fr" }}><div style={{ maxWidth: "64ch" }}><h3>{u.at}</h3><p>{u.a}</p></div></div>
-    </div></section>
-  );
+ const u=ui[lang];
+ return <section id="path" className="path-section"><div className="w">
+  <p className="eyebrow">✦ {lang==="fr"?"À PROPOS & EXPÉRIENCES":"ABOUT & EXPERIENCE"}</p>
+  <h2>{u.pt}</h2><p className="sub">{lang==="fr"?"Recherche, développement et formation scientifique — le fil conducteur de mon parcours.":"Research, development and scientific education — the journey behind my work."}</p>
+  <article className="profile-story-card"><div className="profile-story-head"><span className="eyebrow">✧ {lang==="fr"?"QUI JE SUIS":"WHO I AM"}</span><span aria-hidden="true" className="profile-sparkle">✳</span></div><h3>{u.at}<span className="hero-period">.</span></h3><div className="profile-story-copy">{profileText[lang].map((paragraph,i)=><p key={i}>{paragraph}</p>)}</div><div className="profile-tags">{(lang==="fr"?["Intelligence artificielle","Data Science","Développement Python","Recherche appliquée"]:["Artificial Intelligence","Data Science","Python Development","Applied Research"]).map(tag=><span key={tag}>{tag}</span>)}</div></article>
+  <div className="path-heading"><div><p className="eyebrow">{lang==="fr"?"LES ÉTAPES CLÉS":"KEY MILESTONES"}</p><h3>{lang==="fr"?"Expériences & formation":"Experience & education"}</h3></div><p>{lang==="fr"?"Un parcours scientifique et international, enrichi par des projets concrets.":"A scientific, international journey shaped by hands-on projects."}</p></div>
+  <div className="path-timeline">{backgroundItems.map((item,i)=><article className="path-card" key={i}><div className="path-card-top"><span className="path-year">{item.year}</span><span className="path-type">{item.type[lang]}</span></div><h4>{item.title[lang]}</h4><p className="path-place">⌁ {item.place}</p><p className="path-description">{item.description[lang]}</p><div className="profile-tags">{item.tags.map(tag=><span key={tag}>{tag}</span>)}</div></article>)}</div>
+ </div></section>;
 }
 
 function Skills({ lang }: { lang: Lang }) {
@@ -239,7 +236,7 @@ function Contact({ lang }: { lang: Lang }) {
 
 export function Home() {
   const { lang, setLang } = useLang();
-  return (<><Header lang={lang} setLang={setLang} /><main id="top"><Hero lang={lang} /><Work lang={lang} /><Path lang={lang} /><Skills lang={lang} /><Certs lang={lang} /><Contact lang={lang} /></main><Footer /></>);
+  return (<><Header lang={lang} setLang={setLang} /><main id="top"><Hero lang={lang} /><Featured lang={lang} /><Work lang={lang} /><Path lang={lang} /><Skills lang={lang} /><Certs lang={lang} /><Contact lang={lang} /></main><Footer /></>);
 }
 
 export function ProjectListing() {
@@ -278,13 +275,15 @@ export function ProjectDetail({ slug }: { slug: string }) {
           <div><h1>{t(p.title, lang)}</h1><p>{t(p.category, lang)}</p></div>
         </div>
         <p style={{ maxWidth: "66ch", fontSize: "1.2rem" }}>{t(p.description, lang)}</p>
+        <div className="case-facts"><div><small>{lang==="fr"?"DOMAINE":"DOMAIN"}</small><strong>{t(p.category,lang)}</strong></div><div><small>{lang==="fr"?"MÉTHODES":"METHODS"}</small><strong>{p.tools.slice(0,3).join(" · ")}</strong></div><div><small>{lang==="fr"?"LIVRABLES":"DELIVERABLES"}</small><strong>{items.length ? `${items.length} ${lang==="fr"?"visualisations":"visualizations"}` : (lang==="fr"?"Code et analyses":"Code & analysis")}</strong></div></div>
+        <div className="case-intro"><p className="eyebrow">01 / {lang==="fr"?"LE CONTEXTE":"THE CONTEXT"}</p><h2>{lang==="fr"?"Problème & approche":"Problem & approach"}</h2><p>{t(p.detail,lang)}</p></div>
         {items.length > 0 && (<>
-          <h2>{u.shots}</h2>
+          <p className="eyebrow">02 / {lang==="fr"?"RÉSULTATS VISUELS":"VISUAL RESULTS"}</p><h2>{u.shots}</h2>
           <div className="cg gal">{items.map((it, i) => (<button key={it.src} className="cc" onClick={() => setZ(i)} aria-label={it.cap}><img src={it.src} alt={it.cap} loading="lazy" /><div><small>{it.cap}</small></div></button>))}</div>
           <Lightbox items={items} i={z} set={setZ} />
         </>)}
-        <h2>{u.approach}</h2><p style={{ maxWidth: "66ch" }}>{t(p.detail, lang)}</p>
-        <h2>{u.tools}</h2><div className="tg">{p.tools.map((x) => <span key={x}>{x}</span>)}</div>
+
+        <p className="eyebrow">03 / {lang==="fr"?"OUTILS":"TOOLKIT"}</p><h2>{u.tools}</h2><div className="tg">{p.tools.map((x) => <span key={x}>{x}</span>)}</div>
         {url && <div className="act" style={{ marginTop: "2.2rem" }}><a className="btn p" href={url} target="_blank" rel="noopener noreferrer">GitHub</a></div>}
         <Link className="nx" href={`/projects/${nxt.slug}/`}><small>{u.next}</small><b>{t(nxt.title, lang)}</b></Link>
       </main><Footer /></>

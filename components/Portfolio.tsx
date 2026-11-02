@@ -81,7 +81,7 @@ function Hero({ lang }: { lang: Lang }) {
       <div className="cta"><a className="btn p" href="#work">✦ {u.b1} ↗</a><a className="btn" href="/Awa_Mbaye_CV.pdf" download>↓ {u.b2}</a></div>
       <div className="hero-stats"><div><strong>{sorted.length}</strong><span>{lang==="fr"?"Projets":"Projects"}</span></div><div><strong>2</strong><span>{lang==="fr"?"Expériences de recherche":"Research experiences"}</span></div><div><strong>{skills.reduce((n,g)=>n+g.items.length,0)}+</strong><span>{lang==="fr"?"Compétences":"Technical skills"}</span></div><div><strong>{certs.length}</strong><span>{lang==="fr"?"Certificats":"Certificates"}</span></div></div>
     </div>
-    <div className="hero-visual"><div className="portrait-halo"><img src="/profile.jpg" alt="Awa Mbaye" /></div><div className="floating-tag tag-one">✦ {lang==="fr"?"IA & Deep Learning":"AI & Deep Learning"}</div><div className="floating-tag tag-two">◈ Data Science</div><div className="floating-tag tag-three">✧ {lang==="fr"?"Imagerie médicale":"Medical imaging"}</div><div className="floating-tag tag-four">∑ {lang==="fr"?"Mathématiques appliquées":"Applied mathematics"}</div><div className="signature">Awa Mbaye</div></div>
+    <div className="hero-visual"><div className="portrait-halo"><img src="/profile.png" alt="Awa Mbaye" /></div><div className="floating-tag tag-one">✦ {lang==="fr"?"IA & Deep Learning":"AI & Deep Learning"}</div><div className="floating-tag tag-two">◈ Data Science</div><div className="floating-tag tag-three">✧ {lang==="fr"?"Imagerie médicale":"Medical imaging"}</div><div className="floating-tag tag-four">∑ {lang==="fr"?"Mathématiques appliquées":"Applied mathematics"}</div><div className="signature">Awa Mbaye</div></div>
   </div></section>;
 }
 

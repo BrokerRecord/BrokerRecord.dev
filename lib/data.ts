@@ -11,12 +11,13 @@ export const skills: Group[] = [
   { fr: "Scientifique", en: "Scientific", items: [["Matplotlib","matplotlib"],["Statistiques","Σ"],["Analyse numérique","∂"],["Plans d’expérience","∿"]] },
 ];
 export const certs = [
+  {name: "Data Fundamentals",org: "IBM SkillsBuild",date: "2026-10-28",img: "/certs/ibm-data-fundamentals.png"},
   { name: "Python", org: "Kaggle", date: "2024-02-19", img: "/certs/python.jpg" },
   { name: "Intro to Machine Learning", org: "Kaggle", date: "2024-02-22", img: "/certs/intro-ml.jpg" },
   { name: "Pandas", org: "Kaggle", date: "2024-03-19", img: "/certs/pandas.jpg" },
   { name: "Intermediate Machine Learning", org: "Kaggle", date: "2024-03-26", img: "/certs/intermediate-ml.jpg" },
 ];
-export const inProgress = [{ name: "Data Fundamentals", org: "IBM" }, { name: "Data Analytics Essentials", org: "Cisco" }];
+export const inProgress = [{ name: "WEB Development Fundamentals", org: "IBM" }, { name: "Data Analytics Essentials", org: "Cisco" }];
 export const role: Record<Lang, [string, string, string]> = {
   fr: ["Ingénieure R&D en ", "IA", ", data science et développement Python."],
   en: ["R&D engineer in ", "AI", ", data science and Python development."],
@@ -31,7 +32,7 @@ export const ui: Record<Lang, Record<string, string>> = {
     e2t:"Application et données comportementales",e2:"Application React Native/Firebase pour des tâches cognitives et analyse statistique de données expérimentales avec R.",
     at:"Un profil à la croisée des disciplines",a:"Classes préparatoires scientifiques, formation d’ingénieure en Cognitique à Bordeaux INP – ENSC et échange à la Graduate School of AI de POSTECH. J’aime relier rigueur mathématique, développement logiciel et problèmes concrets.",
     st:"Compétences",ss:"Les outils que j’utilise dans mes projets.",
-    ct:"Certifications",cs:"Quatre cours Kaggle terminés, et deux parcours en cours pour consolider mes bases en analyse de données.",
+    ct:"Certifications",cs:"Cinq certifications obtenues, dont IBM Data Fundamentals, et deux formations en cours dont la formation Cisco pour approfondir mes compétences en analyse de données.",
     kt:"Travaillons ensemble",ks:"R&D, IA appliquée, data science ou développement Python : je serais ravie d’échanger.",
     live:"En cours",open:"Ouvrir le projet",code:"Voir le code",back:"Retour aux projets",all:"Tous les projets",
     approach:"Contexte et contribution",tools:"Technologies et méthodes",shots:"Résultats et captures",next:"Projet suivant",
@@ -45,7 +46,7 @@ export const ui: Record<Lang, Record<string, string>> = {
     e2t:"App & behavioral data research",e2:"React Native/Firebase app for cognitive tasks and statistical analysis of experimental data with R.",
     at:"Working across disciplines",a:"Scientific preparatory classes, an engineering degree in Cognitive Science at Bordeaux INP – ENSC, and an exchange at POSTECH’s Graduate School of AI. I enjoy connecting mathematical rigor, software engineering and real-world problems.",
     st:"Skills",ss:"The tools I use across my projects.",
-    ct:"Certifications",cs:"Four completed Kaggle courses, plus two programs in progress to strengthen my data analysis foundations.",
+    ct:"Certifications",cs:"Five completed certifications, including IBM Data Fundamentals, with ongoing IBM Web Development Funfamentals and Cisco training to strengthen my data analytics expertise.",
     kt:"Let’s connect",ks:"Hiring in R&D, applied AI, data science or Python development? I’d be happy to talk.",
     live:"In progress",open:"Open project",code:"View code",back:"Back to projects",all:"All projects",
     approach:"Context and contribution",tools:"Technologies and methods",shots:"Results and screenshots",next:"Next project",
